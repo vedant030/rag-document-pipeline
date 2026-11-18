@@ -1,0 +1,7 @@
+# Needed for the AWS / production path (not for the offline demo)
+boto3>=1.34
+chromadb>=0.5
+langchain-text-splitters>=0.2
+sentence-transformers>=3
+pypdf>=4
+# Airflow is installed in your Airflow environment: apache-airflow>=2.9,<3

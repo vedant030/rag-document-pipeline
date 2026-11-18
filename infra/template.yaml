@@ -1,0 +1,53 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: S3 bucket that triggers a Lambda to chunk, validate, embed and index documents.
+
+Parameters:
+  VectorStore:
+    Type: String
+    Default: chroma
+  ChromaHost:
+    Type: String
+    Description: Hostname of the Chroma server (reachable from the Lambda)
+
+Resources:
+  DocsBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      NotificationConfiguration:
+        LambdaConfigurations:
+          - Event: s3:ObjectCreated:*
+            Function: !GetAtt IngestFunction.Arn
+            Filter:
+              S3Key:
+                Rules: [{ Name: prefix, Value: documents/ }]
+          - Event: s3:ObjectRemoved:*
+            Function: !GetAtt IngestFunction.Arn
+            Filter:
+              S3Key:
+                Rules: [{ Name: prefix, Value: documents/ }]
+    DependsOn: S3InvokePermission
+
+  S3InvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref IngestFunction
+      Action: lambda:InvokeFunction
+      Principal: s3.amazonaws.com
+      SourceAccount: !Ref AWS::AccountId
+
+  IngestFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Runtime: python3.11
+      Handler: rag_pipeline.lambda_handler.handler
+      CodeUri: ../src/
+      Timeout: 120
+      MemorySize: 512
+      Environment:
+        Variables:
+          VECTOR_STORE: !Ref VectorStore
+          CHROMA_HOST: !Ref ChromaHost
+      Policies:
+        - S3ReadPolicy:
+            BucketName: "*"
