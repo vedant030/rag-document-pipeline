@@ -13,7 +13,7 @@ from typing import Protocol
 import numpy as np
 
 _STOPWORDS = frozenset(
-    "a an and are as at be by for from has have how i in is it its of on or that the this to was we what when which with you your do does can".split()
+    "a an and are as at be by for from has have how i in is it its of on or that the this to was we what when which with you your do does can if my me our us they them their there then than so not but will would should could may might also any all about into over after before up out no yes".split()
 )
 _TOKEN = re.compile(r"[a-z0-9]+")
 
