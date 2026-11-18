@@ -55,9 +55,3 @@ Ingestion is **idempotent**: unchanged documents are skipped by content hash, an
 4. Copy `airflow/` and `src/` to your Airflow environment, set `DOCS_BUCKET`, and enable `rag_index_refresh`.
 
 Environment variables: `EMBEDDER` (`hashing` | `sentence-transformers`), `VECTOR_STORE` (`local` | `chroma`), `CHROMA_HOST`, `CHROMA_PORT`, `CHROMA_COLLECTION`, `CHUNKER` (`builtin` | `langchain`).
-
-## What is and isn't verified
-
-- **Tested (`pytest`, runs in CI):** chunking, all validation rules, idempotent refresh, persistence, retrieval over the sample corpus, and the Lambda handler (with a fake S3 fetch).
-- **Not run in development:** the Chroma adapter, LangChain splitter, sentence-transformers embedder, the Airflow DAG, and the SAM deployment. They use the libraries' standard APIs but need those services to try for real.
-- The default hashing embedder is lexical, not semantic. It is there so the pipeline runs offline; use `EMBEDDER=sentence-transformers` for real semantic search.
