@@ -11,8 +11,11 @@ Airflow (daily rescan) ─────────┘                       │
 
 ## Try it in 30 seconds (no AWS, no API keys)
 
+Requires Python 3.10 or newer.
+
 ```
 pip install -r requirements.txt
+pip install -e .
 python -m rag_pipeline ingest sample_docs
 python -m rag_pipeline query "how long do you keep customer data after an account is closed?"
 streamlit run streamlit_app.py     # interactive demo
